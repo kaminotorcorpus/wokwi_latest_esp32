@@ -76,19 +76,12 @@ def get_latest_projects(url):
     return projects
 
 # Fonction pour générer un fichier HTML
-def generate_html(projects, output_file='projects.html', max_results=50):
-    # Trier les projets pour que les plus récents soient en haut (ordre inverse)
-    projects = sorted(projects, key=lambda x: x['retrieved_at'], reverse=True)
-
-    # Limiter le nombre de projets affichés en fonction de `max_results`
-    projects = projects[:max_results]
-
+def generate_html(projects, output_file='projects.html'):
     html_content = '''
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-         <meta http-equiv="refresh" content="60">  <!-- Ajout de l'auto-refresh -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Latest ESP32 Projects</title>
         <style>
@@ -189,9 +182,6 @@ url = "https://wokwi.com/esp32"
 
 projets_enregistres = charger_projets_enregistres()
 
-# Variable définissant le nombre maximum de résultats à afficher
-max_resultats = 50  # Choisir le nombre de projets à afficher (50, 100, 200, etc.)
-
 while True:
     print("Scanning for new projects...")
 
@@ -205,9 +195,7 @@ while True:
         print(f"{len(nouveaux_ajouts)} nouveaux projets trouvés.")
         projets_enregistres.extend(nouveaux_ajouts)
         sauvegarder_projets_enregistres(projets_enregistres)
-
-        # Générer le fichier HTML avec le nombre maximum de projets définis
-        generate_html(projets_enregistres, max_results=max_resultats)
+        generate_html(projets_enregistres[::-1])
 
     else:
         print("Aucun nouveau projet trouvé.")
